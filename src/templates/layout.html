@@ -7,8 +7,8 @@
     <title>LoveChain</title>
 
     <!-- Bootstrap -->
-    <link href="css/style.css" rel="stylesheet">
-    <link href="css/font-awesome.css" rel="stylesheet"/>
+    <link href="/static/css/style.css" rel="stylesheet">
+    <link href="/static/css/font-awesome.css" rel="stylesheet"/>
 
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -25,23 +25,16 @@
         <h1><a href="/">LoveChain</a></h1>
       </div>
       <div class="navigation">
-        <div><a href="/">Home</a></div>
+        <div><a href="/">Shop</a></div>
         <div>/</div>
-        <div><a href="/about.html">About Us</a></div>
+        <div><a href="/about">About Us</a></div>
         <div>/</div>
-        <div><a href="/inventory.html">Your Inventory</a></div>
+        <div><a href="/inventory">Your Inventory</a></div>
         <div>/</div>
         <div><a href="https://github.com/rauljordan" target="_blank"><i class="fa fa-github"></i>Github</a></div>
       </div>
       <div class="card">
-        <input id="name" placeholder="name"/>
-        <input id="description" placeholder="description"/>
-        <input id="supply" placeholder="supply"/>
-        <input id="price" placeholder="price"/>
-        <a href="#" id="createItem">Create New item</a>
-
-        <div id="itemsRow">
-        </div>
+        {% block body %}{% endblock %}
       </div>
     </div>
 
@@ -50,12 +43,22 @@
       <div class="item-description"></div>
       <div class="item-supply"></div>
       <div class="item-price"></div>
-      <a href="#">View Item</a>
+      <a href="/purchase/1">View Item</a>
     </div>
 
-    <script src="js/jquery.min.js"></script>
-    <script src="js/web3.min.js"></script>
-    <script src="js/truffle-contract.js"></script>
-    <script src="js/app.js"></script>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/web3.min.js"></script>
+    <script src="/static/js/truffle-contract.js"></script>
+    <script src="/static/js/app.js"></script>
+
+    <script>
+      LoveShopArtifact = {{ contract|tojson }};
+      $(function() {
+        $(window).load(function() {
+          App.init(LoveShopArtifact);
+        });
+      });
+    </script>
+
   </body>
 </html>

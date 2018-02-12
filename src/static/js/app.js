@@ -2,11 +2,11 @@ App = {
   web3Provider: null,
   contracts: {},
 
-  init: function() {
-    return App.initWeb3();
+  init: function(contract) {
+    return App.initWeb3(contract);
   },
 
-  initWeb3: function() {
+  initWeb3: function(contract) {
     // Initialize web3 and set the provider to the testRPC.
     if (typeof web3 !== 'undefined') {
       App.web3Provider = web3.currentProvider;
@@ -17,22 +17,15 @@ App = {
       web3 = new Web3(App.web3Provider);
     }
 
-    return App.initContract();
+    return App.initContract(contract);
   },
 
-  initContract: function() {
-    $.getJSON('LoveShop.json', function(data) {
-      // Get the necessary contract artifact file and instantiate it with truffle-contract.
-      var LoveShopArtifact = data;
-      App.contracts.LoveShop = TruffleContract(LoveShopArtifact);
+  initContract: function(contract) {
+    App.contracts.LoveShop = TruffleContract(contract);
+    // Set the provider for our contract.
+    App.contracts.LoveShop.setProvider(App.web3Provider);
 
-      // Set the provider for our contract.
-      App.contracts.LoveShop.setProvider(App.web3Provider);
-
-      // Use our contract to retieve and mark the adopted pets.
-      return App.getAllItems();
-    });
-
+    App.getAllItems();
     return App.bindEvents();
   },
 
@@ -42,7 +35,7 @@ App = {
 
   createItem: function(event) {
     event.preventDefault();
-
+    console.log('CLICKED!!!');
     var loveShopInstance;
 
     web3.eth.getAccounts(function(error, accounts) {
@@ -81,8 +74,7 @@ App = {
 
     App.contracts.LoveShop.deployed().then(function(instance) {
       loveShopInstance = instance;
-      console.log(instance);
-      return loveShopInstance.items(0);
+      return loveShopInstance.items(1);
     }).then(function(result) {
       console.log(result);
       var itemsRow = $('#itemsRow');
@@ -102,9 +94,3 @@ App = {
   }
 
 };
-
-$(function() {
-  $(window).load(function() {
-    App.init();
-  });
-});
