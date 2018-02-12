@@ -1,5 +1,8 @@
 body {
-  background-color: #FF4771;
+  /* gifs pink background-color: #FF83F6; */
+  background-color: #FFABBE;
+  /*background-color: #E00827;*/
+  font-family: 'Montserrat';
 }
 
 h1 {
@@ -49,4 +52,5 @@ a {
   border-radius: 12px;
   height: 1000px;
   box-shadow: 0px 30px 300px rgba(0, 0, 0, 0.4);
+  margin-bottom: 80px;
 }

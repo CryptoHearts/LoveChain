@@ -21,34 +21,29 @@ App = {
   },
 
   initContract: function() {
-    $.getJSON('TutorialToken.json', function(data) {
+    $.getJSON('LoveShop.json', function(data) {
       // Get the necessary contract artifact file and instantiate it with truffle-contract.
-      var TutorialTokenArtifact = data;
-      App.contracts.TutorialToken = TruffleContract(TutorialTokenArtifact);
+      var LoveShopArtifact = data;
+      App.contracts.LoveShop = TruffleContract(LoveShopArtifact);
 
       // Set the provider for our contract.
-      App.contracts.TutorialToken.setProvider(App.web3Provider);
+      App.contracts.LoveShop.setProvider(App.web3Provider);
 
       // Use our contract to retieve and mark the adopted pets.
-      return App.getBalances();
+      return App.getAllItems();
     });
 
     return App.bindEvents();
   },
 
   bindEvents: function() {
-    $(document).on('click', '#transferButton', App.handleTransfer);
+    $(document).on('click', '#createItem', App.createItem);
   },
 
-  handleTransfer: function(event) {
+  createItem: function(event) {
     event.preventDefault();
 
-    var amount = parseInt($('#TTTransferAmount').val());
-    var toAddress = $('#TTTransferAddress').val();
-
-    console.log('Transfer ' + amount + ' TT to ' + toAddress);
-
-    var tutorialTokenInstance;
+    var loveShopInstance;
 
     web3.eth.getAccounts(function(error, accounts) {
       if (error) {
@@ -57,43 +52,53 @@ App = {
 
       var account = accounts[0];
 
-      App.contracts.TutorialToken.deployed().then(function(instance) {
-        tutorialTokenInstance = instance;
-
-        return tutorialTokenInstance.transfer(toAddress, amount, {from: account});
+      App.contracts.LoveShop.deployed().then(function(instance) {
+        loveShopInstance = instance;
+        var name = $('#name').val().toLowerCase().trim();
+        var description = $('#description').val().toLowerCase().trim();
+        var supply = $('#supply').val().toLowerCase().trim();
+        var price = $('#price').val().toLowerCase().trim();
+        return loveShopInstance.createItem(
+          name,
+          description,
+          supply,
+          web3.toWei(price),
+          {from: account}
+        );
       }).then(function(result) {
-        alert('Transfer Successful!');
-        return App.getBalances();
+        alert('Creation successful!');
+        return App.getAllItems();
       }).catch(function(err) {
         console.log(err.message);
       });
     });
   },
 
-  getBalances: function() {
-    console.log('Getting balances...');
+  getAllItems: function() {
+    console.log('Getting items...');
 
-    var tutorialTokenInstance;
+    var loveShopInstance;
 
-    web3.eth.getAccounts(function(error, accounts) {
-      if (error) {
-        console.log(error);
-      }
+    App.contracts.LoveShop.deployed().then(function(instance) {
+      loveShopInstance = instance;
+      console.log(instance);
+      return loveShopInstance.items(0);
+    }).then(function(result) {
+      console.log(result);
+      var itemsRow = $('#itemsRow');
+      var itemTemplate = $('#itemTemplate');
 
-      var account = accounts[0];
+      itemTemplate.find('.item-name').text(result[0]);
+      itemTemplate.find('.item-description').text(result[1]);
+      itemTemplate.find('.item-supply').text(result[2]);
+      itemTemplate.find('.item-price').text(result[3]);
 
-      App.contracts.TutorialToken.deployed().then(function(instance) {
-        tutorialTokenInstance = instance;
+      itemsRow.append(itemTemplate.html());
 
-        return tutorialTokenInstance.balanceOf(account);
-      }).then(function(result) {
-        balance = result.c[0];
-
-        $('#TTBalance').text(balance);
-      }).catch(function(err) {
-        console.log(err.message);
-      });
+    }).catch(function(err) {
+      console.log(err.message);
     });
+
   }
 
 };

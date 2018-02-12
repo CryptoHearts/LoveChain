@@ -1,5 +1,5 @@
-var TutorialToken = artifacts.require("TutorialToken");
+var LoveShop = artifacts.require("LoveShop");
 
 module.exports = function(deployer) {
-  deployer.deploy(TutorialToken);
+  deployer.deploy(LoveShop);
 };
