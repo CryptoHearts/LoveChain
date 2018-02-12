@@ -2,4 +2,25 @@
 {% block body %}
 <div id="itemsRow">
 </div>
+<div id="itemTemplate" style="display: none;">
+  <div class="item-name"></div>
+  <div class="item-description"></div>
+  <div class="item-supply"></div>
+  <div class="item-price"></div>
+  <a class="item-link" href="#">View Item</a>
+</div>
+
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/web3.min.js"></script>
+<script src="/static/js/truffle-contract.js"></script>
+<script src="/static/js/app.js"></script>
+
+<script>
+  LoveShopArtifact = {{ contract|tojson }};
+  $(function() {
+    $(window).load(function() {
+      App.init(LoveShopArtifact);
+    });
+  });
+</script>
 {% endblock %}

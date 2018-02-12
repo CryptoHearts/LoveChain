@@ -47,22 +47,20 @@ contract LoveShop is Ownable {
   mapping (address => Item) ownerships;
   mapping (uint => Item) public items;
 
-  function createItem(string _name, string _description, uint _supply, uint _price) public onlyOwner returns (uint) {
-    require(_supply > 0);
-    require(_supply <= 1000);
-    require(_price > 0);
-
-    uint itemID = numItems++;
-    items[itemID] = Item({
-      name: _name,
-      description: _description,
-      supply: _supply,
-      price: _price
+  function LoveShop() public {
+    items[0] = Item({
+      name: 'diamond ring',
+      description: 'beautiful nice ring',
+      supply: 1000,
+      price: 10000000
     });
 
-    return itemID;
+    items[1] = Item({
+      name: 'beach house',
+      description: 'a pretty beach house',
+      supply: 1000,
+      price: 10000000
+    });
   }
-
-
 
 }

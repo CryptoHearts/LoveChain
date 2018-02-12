@@ -25,39 +25,29 @@ App = {
     // Set the provider for our contract.
     App.contracts.LoveShop.setProvider(App.web3Provider);
 
-    App.getAllItems();
+    App.getItem();
     return App.bindEvents();
   },
 
   bindEvents: function() {
-    $(document).on('click', '#createItem', App.createItem);
+    $(document).on('click', '#purchaseItem', App.purchaseItem);
   },
 
-  getAllItems: function() {
-    console.log('Getting items...');
+  getItem: function() {
 
     var loveShopInstance;
 
     App.contracts.LoveShop.deployed().then(function(instance) {
       loveShopInstance = instance;
-      var items = [];
-      for (var i = 0; i < 14; i++) {
-        items.push(loveShopInstance.items(i));
-      }
-      return Promise.all(items)
+      var id = window.location.pathname.split('/')[2];
+      return loveShopInstance.items(id);
     }).then(function(result) {
-      for (var i = 0; i < result.length; i++) {
-        var itemsRow = $('#itemsRow');
-        var itemTemplate = $('#itemTemplate');
+      var itemTemplate = $('#purchaseTemplate');
 
-        itemTemplate.find('.item-name').text(result[i][0]);
-        itemTemplate.find('.item-description').text(result[i][1]);
-        itemTemplate.find('.item-supply').text(result[i][2]);
-        itemTemplate.find('.item-price').text(result[i][3]);
-        itemTemplate.find('.item-link').attr('href', '/purchase/' + i);
-
-        itemsRow.append(itemTemplate.html());
-      }
+      itemTemplate.find('.item-name').text(result[0]);
+      itemTemplate.find('.item-description').text(result[1]);
+      itemTemplate.find('.item-supply').text(result[2]);
+      itemTemplate.find('.item-price').text(result[3]);
 
     }).catch(function(err) {
       console.log(err.message);

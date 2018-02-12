@@ -1,8 +1,29 @@
 {% extends "layout.html" %}
 {% block body %}
 <p>Buy your loved one a new item: {{ item }}!</p>
+
+<div id="purchaseTemplate">
+  <div class="item-name"></div>
+  <div class="item-description"></div>
+  <div class="item-supply"></div>
+  <div class="item-price"></div>
+</div>
+
 <form>
   <input placeholder="Your Loved One's Email"/>
 </form>
 <button>Buy</button>
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/web3.min.js"></script>
+<script src="/static/js/truffle-contract.js"></script>
+<script src="/static/js/purchase.js"></script>
+
+<script>
+  LoveShopArtifact = {{ contract|tojson }};
+  $(function() {
+    $(window).load(function() {
+      App.init(LoveShopArtifact);
+    });
+  });
+</script>
 {% endblock %}
