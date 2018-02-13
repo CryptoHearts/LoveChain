@@ -25,12 +25,7 @@ App = {
     // Set the provider for our contract.
     App.contracts.LoveShop.setProvider(App.web3Provider);
 
-    App.getAllItems();
-    return App.bindEvents();
-  },
-
-  bindEvents: function() {
-    $(document).on('click', '#createItem', App.createItem);
+    return App.getAllItems();
   },
 
   getAllItems: function() {
@@ -40,12 +35,14 @@ App = {
 
     App.contracts.LoveShop.deployed().then(function(instance) {
       loveShopInstance = instance;
+      console.log(loveShopInstance);
       var items = [];
       for (var i = 0; i < 14; i++) {
         items.push(loveShopInstance.items(i));
       }
-      return Promise.all(items)
+      return Promise.all(items);
     }).then(function(result) {
+      console.log(result);
       for (var i = 0; i < result.length; i++) {
         var itemsRow = $('#itemsRow');
         var itemTemplate = $('#itemTemplate');

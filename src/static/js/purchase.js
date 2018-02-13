@@ -30,7 +30,35 @@ App = {
   },
 
   bindEvents: function() {
-    $(document).on('click', '#purchaseItem', App.purchaseItem);
+    $(document).on('click', '#purchaseButton', App.purchaseItem);
+  },
+
+  purchaseItem: function() {
+
+    var loveShopInstance;
+
+    web3.eth.getAccounts(function(error, accounts) {
+      if (error) {
+        console.log(error);
+      }
+
+      var account = accounts[0];
+
+      App.contracts.LoveShop.deployed().then(function(instance) {
+        loveShopInstance = instance;
+        var id = window.location.pathname.split('/')[2];
+        return loveShopInstance.purchaseToken(
+          id,
+          {from: account, value: web3.toWei('0.01', 'ether')}
+        );
+      }).then(function(result) {
+        alert('Purchase successful!');
+        return App.getItem();
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+    });
+
   },
 
   getItem: function() {

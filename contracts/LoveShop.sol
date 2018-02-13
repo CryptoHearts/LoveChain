@@ -1,39 +1,6 @@
 pragma solidity ^0.4.17;
 
-contract Ownable {
-  address public owner;
-
-  event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
-
-  /**
-   * @dev The Ownable constructor sets the original `owner` of the contract to the sender
-   * account.
-   */
-  function Ownable() public {
-    owner = msg.sender;
-  }
-
-  /**
-   * @dev Throws if called by any account other than the owner.
-   */
-  modifier onlyOwner() {
-    require(msg.sender == owner);
-    _;
-  }
-
-  /**
-   * @dev Allows the current owner to transfer control of the contract to a newOwner.
-   * @param newOwner The address to transfer ownership to.
-   */
-  function transferOwnership(address newOwner) public onlyOwner {
-    require(newOwner != address(0));
-    OwnershipTransferred(owner, newOwner);
-    owner = newOwner;
-  }
-
-}
-
-contract LoveShop is Ownable {
+contract LoveShop {
 
   struct Item {
     string name;
@@ -42,12 +9,18 @@ contract LoveShop is Ownable {
     uint price;
   }
 
-  uint balance;
-  uint numItems;
-  mapping (address => Item) ownerships;
+  struct Purchase {
+    uint itemID;
+    uint price;
+  }
+
+  address public owner;
   mapping (uint => Item) public items;
+  mapping (address => Purchase) public purchases;
 
   function LoveShop() public {
+    owner = msg.sender;
+
     items[0] = Item({
       name: 'diamond ring',
       description: 'beautiful nice ring',
@@ -61,6 +34,32 @@ contract LoveShop is Ownable {
       supply: 1000,
       price: 10000000
     });
+  }
+
+  function purchaseToken(uint itemID) public payable returns (bool) {
+    if (msg.value == items[itemID].price) {
+
+      msg.sender.transfer(this.balance);
+
+      purchases[msg.sender] = Purchase({
+        itemID: itemID,
+        price: msg.value
+      });
+
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  function withdraw() public returns (bool) {
+    require(msg.sender == owner);
+    owner.transfer(this.balance);
+    return true;
+  }
+
+  function getBalance() constant public returns (uint) {
+    return this.balance;
   }
 
 }
