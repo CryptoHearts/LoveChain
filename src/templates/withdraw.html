@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block body %}
+<p>Withdraw Funds</p>
+<button id="withdrawButton">Withdraw All Funds</button>
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/web3.min.js"></script>
+<script src="/static/js/truffle-contract.js"></script>
+<script src="/static/js/purchase.js"></script>
+
+<script>
+  LoveShopArtifact = {{ contract|tojson }};
+  $(function() {
+    $(window).load(function() {
+      App.init(LoveShopArtifact);
+    });
+  });
+</script>
+{% endblock %}

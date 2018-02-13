@@ -31,6 +31,31 @@ App = {
 
   bindEvents: function() {
     $(document).on('click', '#purchaseButton', App.purchaseItem);
+    $(document).on('click', '#withdrawButton', App.withdraw);
+  },
+
+  withdraw: function() {
+    var loveShopInstance;
+
+    web3.eth.getAccounts(function(error, accounts) {
+      if (error) {
+        console.log(error);
+      }
+
+      var account = accounts[0];
+
+      App.contracts.LoveShop.deployed().then(function(instance) {
+        loveShopInstance = instance;
+        var id = window.location.pathname.split('/')[2];
+        return loveShopInstance.withdraw({ from: account });
+      }).then(function(result) {
+        return App.getBalance();
+      }).then(function(res) {
+        alert('Withdraw Successful! Contract Balance: ' + web3.fromWei(res, 'ether').toString());
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+    });
   },
 
   purchaseItem: function() {
@@ -49,7 +74,7 @@ App = {
         var id = window.location.pathname.split('/')[2];
         return loveShopInstance.purchaseToken(
           id,
-          {from: account, value: web3.toWei('0.01', 'ether')}
+          {from: account, value: web3.toWei('0.01')}
         );
       }).then(function(result) {
         alert('Purchase successful!');
